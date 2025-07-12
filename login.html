@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Eagle Bet 777</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Login / Register</h2>
+    <p>Enter your username to start with 100 credits:</p>
+    <input type="text" id="username" placeholder="Username" class="input-field">
+    <button onclick="login()" class="btn">Enter</button>
+  </div>
+  <script>
+    function login() {
+      const user = document.getElementById('username').value;
+      if (user) {
+        localStorage.setItem('user', user);
+        localStorage.setItem('credit', 100);
+        alert("Welcome " + user + "! You received 100 credits.");
+        window.location.href = "index.html";
+      }
+    }
+  </script>
+</body>
+</html>

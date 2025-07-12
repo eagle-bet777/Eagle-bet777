@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel - Eagle Bet 777</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Admin Login</h2>
+    <div id="login-section">
+      <input type="text" id="adminUser" placeholder="Admin Username" class="input-field">
+      <input type="password" id="adminPass" placeholder="Password" class="input-field">
+      <button onclick="adminLogin()" class="btn">Login</button>
+    </div>
+    <div id="panel-section" style="display:none;">
+      <h3>Credit Control Panel</h3>
+      <input type="text" id="targetUser" placeholder="Player Username" class="input-field">
+      <input type="number" id="amount" placeholder="Credits to Add" class="input-field">
+      <button onclick="addCredit()" class="btn">Add Credits</button>
+    </div>
+  </div>
+  <script>
+    const admins = {
+      "ergen777": "admin123",
+      "eagleadmin": "777bet"
+    };
+
+    function adminLogin() {
+      const u = document.getElementById('adminUser').value;
+      const p = document.getElementById('adminPass').value;
+      if (admins[u] && admins[u] === p) {
+        document.getElementById('login-section').style.display = 'none';
+        document.getElementById('panel-section').style.display = 'block';
+        alert('Admin login successful!');
+      } else {
+        alert('Wrong username or password!');
+      }
+    }
+
+    function addCredit() {
+      const u = document.getElementById('targetUser').value;
+      const c = parseInt(document.getElementById('amount').value);
+      const current = parseInt(localStorage.getItem('credit') || '0');
+      const currentUser = localStorage.getItem('user');
+
+      if (u === currentUser) {
+        localStorage.setItem('credit', current + c);
+        alert('Added ' + c + ' credits to ' + u);
+      } else {
+        alert('This user is not logged in on this device.');
+      }
+    }
+  </script>
+</body>
+</html>

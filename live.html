@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Live Bets - Eagle Bet 777</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .match {
+      background-color: #2a2a3f;
+      padding: 12px;
+      border-radius: 8px;
+      margin: 10px auto;
+      max-width: 600px;
+    }
+    .match h4 {
+      margin: 5px 0;
+    }
+    .match small {
+      color: #ccc;
+    }
+    .bet-btn {
+      margin-top: 8px;
+      background: #29b6f6;
+      color: white;
+      padding: 6px 12px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .bet-btn:hover {
+      background: #0288d1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Live Football Matches ⚽</h2>
+    <div id="matches">Loading live matches...</div>
+    <p style="margin-top:20px;">Your Credits: <span id="credits">0</span></p>
+  </div>
+
+  <script>
+    const apiKey = "21dd80f1836343fea4efd90f0adb566d";
+    const user = localStorage.getItem('user');
+    const creditsDisplay = document.getElementById('credits');
+
+    function updateCredits() {
+      const credits = parseInt(localStorage.getItem('credit') || '0');
+      creditsDisplay.textContent = credits;
+    }
+
+    async function fetchLiveMatches() {
+      const url = "https://v3.football.api-sports.io/fixtures?live=all";
+
+      try {
+        const res = await fetch(url, {
+          method: "GET",
+          headers: {
+            "x-apisports-key": apiKey
+          }
+        });
+
+        const data = await res.json();
+        const matches = data.response;
+        const container = document.getElementById('matches');
+        container.innerHTML = "";
+
+        if (matches.length === 0) {
+          container.innerHTML = "<p>No live matches right now.</p>";
+          return;
+        }
+
+        matches.forEach(match => {
+          const home = match.teams.home.name;
+          const away = match.teams.away.name;
+          const scoreHome = match.goals.home;
+          const scoreAway = match.goals.away;
+          const status = match.fixture.status.elapsed + "'";
+          const id = match.fixture.id;
+
+          const matchDiv = document.createElement("div");
+          matchDiv.className = "match";
+          matchDiv.innerHTML = `
+            <h4>${home} ${scoreHome} - ${scoreAway} ${away}</h4>
+            <small>Status: ${status}</small><br/>
+            <button class="bet-btn" onclick="placeBet('${id}', '${home}')">Bet on ${home}</button>
+            <button class="bet-btn" onclick="placeBet('${id}', '${away}')">Bet on ${away}</button>
+          `;
+          container.appendChild(matchDiv);
+        });
+
+      } catch (err) {
+        document.getElementById('matches').innerHTML = "Error loading matches.";
+        console.error(err);
+      }
+    }
+
+    function placeBet(matchId, team) {
+      const credits = parseInt(localStorage.getItem('credit') || '0');
+      if (!user) {
+        alert("Please login first.");
+        return;
+      }
+      if (credits < 10) {
+        alert("Not enough credits to place a bet.");
+        return;
+      }
+
+      const bet = {
+        matchId,
+        team,
+        time: new Date().toISOString()
+      };
+
+      let history = JSON.parse(localStorage.getItem('bets') || '[]');
+      history.push(bet);
+      localStorage.setItem('bets', JSON.stringify(history));
+      localStorage.setItem('credit', credits - 10);
+      updateCredits();
+      alert(`Bet placed: ${team}. 10 credits deducted.`);
+    }
+
+    updateCredits();
+    fetchLiveMatches();
+    setInterval(fetchLiveMatches, 60000); // refresh every 60s
+  </script>
+</body>
+</html>
