@@ -6,18 +6,48 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <h2>Paneli Admin</h2>
-  <p>Emri: <input id="targetUser"> | Kredite: <input id="amount"> <button onclick="addCredit()">Shto</button></p>
+  <h2>Paneli Admin - Hyrje</h2>
+  <div id="login-section">
+    <input type="text" id="adminUser" placeholder="Emri adminit">
+    <input type="password" id="adminPass" placeholder="Fjalëkalimi">
+    <button onclick="adminLogin()">Hyr si Admin</button>
+  </div>
+
+  <div id="panel-section" style="display:none;">
+    <h3>Paneli i Kredive</h3>
+    <p>Emri i lojtarit: <input id="targetUser"> | Kredite: <input id="amount"> 
+    <button onclick="addCredit()">Shto Kredite</button></p>
+  </div>
+
   <script>
+    const admins = {
+      "ergen777": "admin123",   // Emër + fjalëkalim admini
+      "eagleadmin": "777bet"
+    };
+
+    function adminLogin() {
+      const u = document.getElementById('adminUser').value;
+      const p = document.getElementById('adminPass').value;
+      if (admins[u] && admins[u] === p) {
+        document.getElementById('login-section').style.display = 'none';
+        document.getElementById('panel-section').style.display = 'block';
+        alert('Hyrje e suksesshme si admin!');
+      } else {
+        alert('Emër ose fjalëkalim i gabuar!');
+      }
+    }
+
     function addCredit() {
       const u = document.getElementById('targetUser').value;
       const c = parseInt(document.getElementById('amount').value);
-      if (localStorage.getItem('user') === u) {
-        const curr = parseInt(localStorage.getItem('credit') || '0');
-        localStorage.setItem('credit', curr + c);
+      const current = parseInt(localStorage.getItem('credit') || '0');
+      const currentUser = localStorage.getItem('user');
+
+      if (u === currentUser) {
+        localStorage.setItem('credit', current + c);
         alert('U shtuan ' + c + ' kredi për ' + u);
       } else {
-        alert('Ky përdorues nuk është aktiv tani në këtë pajisje.');
+        alert('Ky përdorues nuk është i loguar në këtë pajisje.');
       }
     }
   </script>
