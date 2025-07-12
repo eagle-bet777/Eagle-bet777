@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Eagle Bet 777</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <h2>Paneli Admin</h2>
+  <p>Emri: <input id="targetUser"> | Kredite: <input id="amount"> <button onclick="addCredit()">Shto</button></p>
+  <script>
+    function addCredit() {
+      const u = document.getElementById('targetUser').value;
+      const c = parseInt(document.getElementById('amount').value);
+      if (localStorage.getItem('user') === u) {
+        const curr = parseInt(localStorage.getItem('credit') || '0');
+        localStorage.setItem('credit', curr + c);
+        alert('U shtuan ' + c + ' kredi për ' + u);
+      } else {
+        alert('Ky përdorues nuk është aktiv tani në këtë pajisje.');
+      }
+    }
+  </script>
+</body>
+</html>
